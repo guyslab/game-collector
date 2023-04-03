@@ -4,7 +4,7 @@
 
 This is a system that collects games from various sources. 
 
-The games are uniquely identifiable by a combination of the sport, compatition, teams in a timeframe of two hours. 
+The games are uniquely identifiable by a combination of the sport, compatition, and teams in a timeframe of two hours. 
 
 The games should be exposed for querying.
 
@@ -16,12 +16,12 @@ The games should be exposed for querying.
 ## Architecture
 
 The system is based on microservices architecture, where services communicate indirectly via message brokers for event processing, or directly by HTTP requests for queries.
-Below is the model, follwoed by a list of events (messages), followed by a list of services, followed by a sequence diagram to discribe the interaction.
+Below is the model, followed by a list of events (messages), followed by a list of services, followed by a sequence diagram to discribe the interaction.
 
 Collection of raw data of games is performed by scheduling web scraping jobs to scrape the sources, where each scraper is designed to scrape only one source.
 A source-specific adapter is transforming each raw game to a domain model game,
 
-Splitting the raw game processing services per source may produce duplicate source code to some extent. However, the number of source is not assumed to scale too much, and the benefit of adapting to changes in record structure of each separate source seems to worth it.
+Splitting the raw game processing services per source may produce duplicate source code to some extent. However, the number of sources is not assumed to scale too much, and the benefit of adapting to changes in record structure of each separate source seems to worth it.
 
 The raw games data is then processed to provide a unique set of games, to then get queried by clients.
 
