@@ -106,7 +106,7 @@ Payload:
 
 ### Other components:
 
-* MQTT server: raw game events message borker, to provide channel for semi-structured game data originating various external sources.
+* MQTT server: raw game events message borker, to provide channel for semi-structured game data originating at various external sources.
 * AMQP server: message broker for domain events
 * Client Gateway: Exposes the internal services to commands and queries from clients, while all other services mentioned above do not provide public access. May feature authorization, throttling, load-balancing, and other user-facing measures.
 
@@ -158,14 +158,14 @@ where `x % 2` is x modulus 2
 
 The large volume mentioned above hints that we should not use in-memory for storing such a potentially huge hash set. Many database solutions support removing/ignoring dupliates while inserting, by declaring unique indexing on the `unique_key` field/property.
 
-One good fit would be to use [MongoDB's unique indexes](https://www.mongodb.com/docs/v4.2/core/index-unique/). Creating a unique index for `unique_key`, upserting the object `{unique_key}`, and catching the "duplicate key error". In that case, only a successful upsert (without errors) would result in publishing the unique-game domain event.
+One good fit would be to use [MongoDB's unique indexes](https://www.mongodb.com/docs/v4.2/core/index-unique/): creating a unique index for `unique_key`, upserting the object `{unique_key}`, and catching the "duplicate key error". In that case, only a successful upsert (without errors) would result in publishing the unique-game domain event.
 
 #### Querying games
 
 The list of unique games is aggregated in `games-report` service. Further anaylsis of this list can (and generally-speaking should) be performed by processing the unique-game events in other flows and services. However this is a filtered collection of a model entity, and other parts of the system may be required to query games against this service as a source of truth.
 
 For the choice of persistence, any database that supports efficient paging, is suitable for handling large data sets and can handle high traffic would do.
-Some example candidates include MongoDB and PostgreSQL. If turther analysis is expected to require complex queries, it may be worth to consider Postgres. Otherwise, we would be better off with Mongo as a simpler and more scalable solution.
+Some example candidates include MongoDB and PostgreSQL. If further analysis is expected to require complex queries, it may be worth to consider Postgres. Otherwise, we would be better off with Mongo as a simpler and more scalable solution.
 
 
 
