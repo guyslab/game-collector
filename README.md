@@ -110,6 +110,31 @@ Payload:
 * AMQP server: message broker for domain events
 * Client Gateway: Exposes the internal services to commands and queries from clients, while all other services mentioned above do not provide public access. May feature authorization, throttling, load-balancing, and other user-facing measures.
 
+```mermaid
+sequenceDiagram
+    actor user
+    participant gateway as client-gateway 
+    participant sched as scraping-scheduler
+    participant scraper as scraper-<source_id>
+    participant mqtt as mqtt
+    participant adapter as source-adapter-<source_id>
+    participant amqp as amqp
+    participant id as game-identifier     
+    participant games as games-report             
+    user->>gateway: PUT .../scraping-plan
+    gateway->>sched: PUT .../scraping-plan
+    sched-)amqp: scrape-due
+    amqp--)scraper: scrape-due
+    scraper->>mqtt: raw-game
+    mqtt--)adapter: raw-game
+    adapter->>amqp: game
+    amqp--)id: game
+    id->>amqp: unique-game
+    amqp--)games: unique-game
+    user->>gateway: GET /games
+    gateway->>games: GET /games
+```
+
 ### Points of interest:
 
 #### Raw game adaptation
