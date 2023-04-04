@@ -56,7 +56,7 @@ Payload:
 }
 ```
 
-#### raw-game
+#### raw-game-<source_id>
 
 A source-specific game record has been scraped out of a source
 
@@ -99,8 +99,8 @@ Payload:
 | Name                       | Functionality                                                              | Publishes          | Subscribes         | Queries/Commands (http)                      | Database                                                               |
 |----------------------------|----------------------------------------------------------------------------|--------------------|--------------------|----------------------------------------------|------------------------------------------------------------------------|
 | scraping-scheduler         | Configures and triggers scraping jobs for a source                         | scrape-due (amqp)  |                    | PUT /sources/{source_id}/scraping-plan       | Document (for scraping-plans)                                          |
-| scraper-<source_id>        | Performs scraping jobs at the desired source, resulting in raw game events | raw-game (mqtt)    | scrape-due (amqp)  |                                              |                                                                        |
-| source-adapter-<source_id> | Transforms source-specific game records to domain model game schema        | game (amqp)        | raw-game (mqtt)    |                                              |                                                                        |
+| scraper-<source_id>        | Performs scraping jobs at the desired source, resulting in raw game events | raw-game-<source_id> (mqtt)    | scrape-due (amqp)  |                                              |                                                                        |
+| source-adapter-<source_id> | Transforms source-specific game records to domain model game schema        | game (amqp)        | raw-game-<source_id> (mqtt)    |                                              |                                                                        |
 | game-identifier            | Ignores duplicate games by uniquely identifying them                       | unique-game (amqp) | game (amqp)        |                                              | Document (for unique game indexing)                                    |
 | games-report               | Stores and exposes games for query                                         |                    | unique-game (amqp) | GET /games?page={page}&page_size={page_size} | Document/Relational (for games dataset retrievals) |
 
@@ -125,8 +125,8 @@ sequenceDiagram
     gateway->>sched: PUT .../scraping-plan
     sched-)amqp: scrape-due
     amqp--)scraper: scrape-due
-    scraper->>mqtt: raw-game
-    mqtt--)adapter: raw-game
+    scraper->>mqtt: raw-game-<source_id>
+    mqtt--)adapter: raw-game-<source_id>
     adapter->>amqp: game
     amqp--)id: game
     id->>amqp: unique-game
