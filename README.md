@@ -21,7 +21,7 @@ Below is the model, followed by a list of events (messages), followed by a list 
 Collection of raw data of games is performed by scheduling web scraping jobs to scrape the sources, where each scraper is designed to scrape only one source.
 A source-specific adapter is transforming each raw game to a domain model game,
 
-Splitting the raw game processing services per source may produce duplicate source code to some extent. However, the number of sources is not assumed to scale too much, and the benefit of adapting to changes in record structure of each separate source seems to worth it.
+Splitting the raw game processing services and events per source may produce duplicate source code to some extent. However, the number of sources is not assumed to scale too much, and the benefit of adapting to changes in record structure of each separate source seems to worth it.
 
 The raw games data is then processed to provide a unique set of games, to then get queried by clients.
 
