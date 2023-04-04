@@ -90,6 +90,7 @@ Payload:
 
 ```json
 {
+  "unique_key": <string>,
   "game": <game (model)>
 }
 ```
